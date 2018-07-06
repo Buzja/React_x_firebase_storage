@@ -1,0 +1,11 @@
+.imageFile{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    flex-wrap: wrap;
+    padding: 15px;
+}
+.imageFile__img{
+    width: 100%;
+}

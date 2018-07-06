@@ -3,6 +3,7 @@ import firebase from 'firebase';
 import File from './components/FIle';
 import ImageFile from './components/ImageFile';
 import Input from './components/Input';
+import './App.css';
 
 const config = {
   apiKey: "AIzaSyDk4JksCFeMAzEmlX53iAdI4wGrh9sGxP4",
@@ -93,8 +94,10 @@ class App extends Component {
   ));
     return (
       <div className="App">
-        <Input onClick={this.uploadFiles}/>         
+        <Input onClick={this.uploadFiles}/>
+        <div className="files_wrapper">         
         {files}
+        </div>
       </div>
     );
   }

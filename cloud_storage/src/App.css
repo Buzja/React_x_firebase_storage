@@ -1,0 +1,5 @@
+.files_wrapper{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
