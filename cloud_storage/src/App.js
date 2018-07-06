@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import firebase from 'firebase';
-
+import File from './components/FIle';
+import ImageFile from './components/ImageFile';
+import Input from './components/Input';
 
 const config = {
   apiKey: "AIzaSyDk4JksCFeMAzEmlX53iAdI4wGrh9sGxP4",
@@ -20,27 +22,31 @@ class App extends Component {
     files:[]
   }
 
-  uploadFiles = e =>{
-    const uploadFile = e.target.files[0];
-    const filesFromState = this.state.files;
-    for(let file of filesFromState){
-      if(file.name === uploadFile.name){
-        console.log("Thats file currently Exist!");
-        return;
-      }
-    }    
-    const uploadTask = storage.ref(`files/${uploadFile.name}`).put(uploadFile);
-    uploadTask.on('state_changed', function(snapshot){
-    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log('Upload is ' + progress + '% done');
-  }, function(error) {
-    console.log(error);
-  }, function() {
-    storage.ref(`files/${uploadFile.name}`).getDownloadURL().then(url=>database.ref('files').push().set({
-       name: uploadFile.name,
-       downloadUrl: url
-       }))
-  });
+  uploadFiles = selectedFiles =>{
+    for(let i=0;i<selectedFiles.length;i++){
+      const uploadFile = selectedFiles[i];   
+      const filesFromState = this.state.files;
+  
+      for(let file of filesFromState){
+        if(file.name === uploadFile.name){
+          console.log("Thats file currently Exist!");
+          return;
+        }
+      }    
+      const uploadTask = storage.ref(`files/${uploadFile.name}`).put(uploadFile);
+      uploadTask.on('state_changed', function(snapshot){
+      var progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      console.log('Upload is ' + progress + '% done');
+    }, function(error) {
+      console.log(error);
+    }, function() {
+      storage.ref(`files/${uploadFile.name}`).getDownloadURL().then(url=>database.ref('files').push().set({
+         name: uploadFile.name,
+         downloadUrl: url,
+         type: uploadFile.type
+         }))
+    });
+    }
   }
 
   componentWillMount=()=>{
@@ -50,12 +56,13 @@ class App extends Component {
       prevFiles.push({
         id: snap.key,
         name: snap.val().name,
-        downloadUrl: snap.val().downloadUrl
+        downloadUrl: snap.val().downloadUrl,
+        type: snap.val().type
       })
 
       this.setState({
         files: prevFiles
-      }, console.log(this.state))
+      })
     })
 
     database.ref('files').on('child_removed',snap=>{
@@ -67,7 +74,7 @@ class App extends Component {
 
       this.setState({
         users: prevFiles
-      }, console.log(this.state))
+      })
     })
   }
 
@@ -79,14 +86,15 @@ class App extends Component {
   }
 
   render() {
-  const images = this.state.files.map(file=>(<div className="image"><img key={file.id} style={{maxWidth:300}} src={file.downloadUrl} name={file.name} alt={file.name}/>
-  <a href={file.downloadUrl} download={file.name} target="_blank">download</a>
-  <button onClick={()=>this.deleteFile(file)}>delete</button>
-  </div>));
+  const files = this.state.files.map(file=>(file.type.search("image") !== -1 ?
+  <ImageFile key={file.id} downloadUrl={file.downloadUrl} name={file.name} onClick={()=>this.deleteFile(file)}/>
+  :
+  <File key={file.id} downloadUrl={file.downloadUrl} name={file.name} onClick={()=>this.deleteFile(file)}/>
+  ));
     return (
-      <div className="App">        
-        <input id="fileUpload" type="file" multiple onChange={this.uploadFiles} />
-        {images}
+      <div className="App">
+        <Input onClick={this.uploadFiles}/>         
+        {files}
       </div>
     );
   }
