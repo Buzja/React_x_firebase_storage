@@ -15,7 +15,7 @@
     background: #6248ff;
     color: #ffffff;
     box-shadow: 0 4px 20px #34278599;
-    padding: 12px 30px;;
+    padding: 12px 30px;
     font-size: 12px;
     border: none;
     border-radius: 35px;
@@ -28,6 +28,7 @@
 
 .input_wrapper__btn:hover {
     background-color:#5139d8;
+    padding: 12px 35px;
 }
 
 
