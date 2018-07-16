@@ -2,4 +2,12 @@
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 480px){
+    .files_wrapper{
+        padding: 30px 10px;
+    }
 }

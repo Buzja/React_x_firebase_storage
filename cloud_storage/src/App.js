@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import firebase from 'firebase';
-import File from './components/FIle';
 import ImageFile from './components/ImageFile';
 import Input from './components/Input';
 import './App.css';
@@ -87,11 +86,9 @@ class App extends Component {
   }
 
   render() {
-  const files = this.state.files.map(file=>(file.type.search("image") !== -1 ?
-  <ImageFile key={file.id} downloadUrl={file.downloadUrl} name={file.name} onClick={()=>this.deleteFile(file)}/>
-  :
-  <File key={file.id} downloadUrl={file.downloadUrl} name={file.name} onClick={()=>this.deleteFile(file)}/>
-  ));
+  const files = this.state.files.map(file=>(
+  <ImageFile key={file.id} downloadUrl={file.downloadUrl} name={file.name} type={file.type} onClick={()=>this.deleteFile(file)}/>
+));
     return (
       <div className="App">
         <Input onClick={this.uploadFiles}/>
